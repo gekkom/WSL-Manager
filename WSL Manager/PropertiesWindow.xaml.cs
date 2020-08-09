@@ -25,7 +25,7 @@ namespace WSL_Manager
             string distroDir = lxRunOfflineInterface.GetDistroDir(distroData.DistroName);
             DistroLocation.Text = distroDir;
             DistroState.Content = distroData.DistroState;
-            DistroWslVersion.Content = distroData.DistroState;
+            DistroWslVersion.Content = distroData.DistroWslVersion;
             DistroSize.Content = (DirSize(new DirectoryInfo(distroDir)) / 1024 / 1024) + " MB";
             SummaryText.Text = lxRunOfflineInterface.GetDistroSummary(distroData.DistroName).Replace("\t", "").Replace("  ", "");
         }
