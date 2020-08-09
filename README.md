@@ -10,7 +10,8 @@ Warning: Only tested and stable on Windows 10 x64 Version 2004, with WSL 1 and 2
 
 Uses [LxRunOffline](https://github.com/DDoSolitary/LxRunOffline) and wsl.exe to manage your WSL distros.
 
-[Original Repo](https://github.com/wslhub/WSL-DistroManager)
+Original project has been abandoned as far as I know.
+[Old Repo](https://github.com/wslhub/WSL-DistroManager)
 
 ![Alt text](Screenshots/screenshot1.png?raw=true)
 
