@@ -18,6 +18,27 @@ Uses [LxRunOffline](https://github.com/DDoSolitary/LxRunOffline) and wsl.exe to 
 
 ![Alt text](Screenshots/screenshot3.jpg?raw=true)
 
+# Features
+  **Implemented:**
+
+  - Open, explore, mount, move, duplicate, register, unregister and terminate your distros
+
+  - You can switch the WSL version of your distros
+
+  - Automatic console renaming to keep track of open distros
+
+  - Properties window with every detail
+
+  **Coming soon:**
+
+  - Resource management
+
+  - Better visual experience
+
+  - Export, import and delete distro functionality
+
+  - Custom distro installer
+
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
