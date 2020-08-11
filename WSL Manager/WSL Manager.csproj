@@ -73,6 +73,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="DistroData.cs" />
     <Compile Include="External\LxRunOfflineInterface.cs" />
     <Compile Include="External\WslInterface.cs" />
     <Compile Include="MainWindow.xaml.cs">

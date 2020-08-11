@@ -22,9 +22,9 @@ namespace WSL_Manager
         private LxRunOfflineInterface lxRunOfflineInterface;
         private WslInterface wslInterface;
 
-        private List<DistroItem> wslDistroDataList;
+        private List<DistroData> wslDistroDataList;
         private bool allowRefresh = true;
-        private DistroItem selectedDistroData;
+        private DistroData selectedDistroData;
 
         // 30 sec
         private const int wslConsoleTimeout = 300;
@@ -73,24 +73,16 @@ namespace WSL_Manager
                 RefreshWslData();
         }
 
-        public class DistroItem
-        {
-            public string DistroImage { get; set; }
-            public string DistroName { get; set; }
-            public string DistroState { get; set; }
-            public int DistroWslVersion { get; set; }
-        }
-
         private void RefreshWslData()
         {
             if (wslDistroDataList == null)
-                wslDistroDataList = new List<DistroItem>();
+                wslDistroDataList = new List<DistroData>();
 
             string[] distroNames = lxRunOfflineInterface.GetDistroList();
 
             string[] runningDistros = wslInterface.GetRunningDistros();
 
-            foreach(DistroItem distroItem in wslDistroDataList.ToList())
+            foreach(DistroData distroItem in wslDistroDataList.ToList())
             {
                 if (!distroNames.Any(distroItem.DistroName.Equals))
                     wslDistroDataList.Remove(distroItem);
@@ -100,7 +92,7 @@ namespace WSL_Manager
             {
                 if (wslDistroDataList.Any(d => d.DistroName == distroNames[i]))
                 {
-                    DistroItem wslDistroData = wslDistroDataList.Find(d => d.DistroName == distroNames[i]);
+                    DistroData wslDistroData = wslDistroDataList.Find(d => d.DistroName == distroNames[i]);
                     wslDistroData.DistroWslVersion = lxRunOfflineInterface.GetDistroWslVersion(distroNames[i]);
                     if (runningDistros.Any(distroNames[i].Equals))
                         wslDistroData.DistroState = "Running";
@@ -109,7 +101,7 @@ namespace WSL_Manager
                 }
                 else
                 {
-                    DistroItem wslDistroData = new DistroItem();
+                    DistroData wslDistroData = new DistroData();
                     wslDistroData.DistroImage = "icons/" + GetImageKey(distroNames[i]) + ".png";
 
                     wslDistroData.DistroName = distroNames[i];
@@ -148,12 +140,12 @@ namespace WSL_Manager
 
         private void DistroListBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            StartDistro(((DistroItem)distroList.SelectedItem).DistroName);
+            StartDistro(((DistroData)distroList.SelectedItem).DistroName);
         }
 
         private void Switch_Loaded(object sender, RoutedEventArgs e)
         {
-            selectedDistroData = (DistroItem)distroList.SelectedItem;
+            selectedDistroData = (DistroData)distroList.SelectedItem;
 
             var menuItem = (MenuItem)e.OriginalSource;
             menuItem.Header = "Switch To WSL " + (selectedDistroData.DistroWslVersion == 1 ? 2 : 1);

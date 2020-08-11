@@ -12,7 +12,7 @@ namespace WSL_Manager
 
         private LxRunOfflineInterface lxRunOfflineInterface;
 
-        public PropertiesWindow(LxRunOfflineInterface lxRunOfflineInterface, DistroItem distroData)
+        public PropertiesWindow(LxRunOfflineInterface lxRunOfflineInterface, DistroData distroData)
         {
             InitializeComponent();
             this.lxRunOfflineInterface = lxRunOfflineInterface;
