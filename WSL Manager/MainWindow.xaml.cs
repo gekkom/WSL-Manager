@@ -183,7 +183,35 @@ namespace WSL_Manager
 
             RefreshWslData();
         }
+        private void Rename_Click(object sender, RoutedEventArgs e)
+        {
+            string folder = lxRunOfflineInterface.GetDistroDir(selectedDistroData.DistroName);
 
+            string newDistroName = Microsoft.VisualBasic.Interaction.InputBox("No spaces or special characters.",
+                                   "New Distro Name",
+                                   "default",
+                                   -1, -1);
+            newDistroName = newDistroName.Trim();
+
+            if (newDistroName.Length == 0)
+            {
+                MessageBox.Show(this, "Empty name", "Error");
+                return;
+            }
+
+            if (lxRunOfflineInterface.GetDistroList().Any(newDistroName.Equals))
+            {
+                MessageBox.Show(this, "Distro name: " + newDistroName + " already exists. Please try again.", "Error");
+                return;
+            }
+
+            wslInterface.TerminateAllDistros();
+
+            lxRunOfflineInterface.UnregisterDistro(selectedDistroData.DistroName);
+            lxRunOfflineInterface.RegisterDistro(newDistroName, folder);
+
+            RefreshWslData();
+        }
         private void Move_Click(object sender, RoutedEventArgs e)
         {
             string folder = SelectFolderDialog();

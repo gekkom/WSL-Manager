@@ -78,6 +78,10 @@
                         Header="Mount" />
                     <Separator />
                     <MenuItem
+                        Click="Rename_Click"
+                        CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Parent}"
+                        Header="Rename" />
+                    <MenuItem
                         Click="Move_Click"
                         CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Parent}"
                         Header="Move" />
