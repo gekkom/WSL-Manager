@@ -156,6 +156,18 @@ namespace WSL_Manager
             StartDistro(selectedDistroData.DistroName);
         }
 
+        private void OpenFolder_Click(object sender, RoutedEventArgs e)
+        {
+            var startInfo = new ProcessStartInfo(
+                System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "explorer.exe"),
+                lxRunOfflineInterface.GetDistroDir(selectedDistroData.DistroName))
+            {
+                UseShellExecute = false,
+            };
+
+            Process.Start(startInfo);
+        }
+
         private void Explore_Click(object sender, RoutedEventArgs e)
         {
             lxRunOfflineInterface.RunDistro(selectedDistroData.DistroName, false, true);
@@ -183,6 +195,7 @@ namespace WSL_Manager
 
             RefreshWslData();
         }
+
         private void Rename_Click(object sender, RoutedEventArgs e)
         {
             string folder = lxRunOfflineInterface.GetDistroDir(selectedDistroData.DistroName);
@@ -212,6 +225,7 @@ namespace WSL_Manager
 
             RefreshWslData();
         }
+
         private void Move_Click(object sender, RoutedEventArgs e)
         {
             string folder = SelectFolderDialog();

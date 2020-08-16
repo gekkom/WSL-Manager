@@ -69,6 +69,10 @@
                         CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Parent}"
                         Header="Open" />
                     <MenuItem
+                        Click="OpenFolder_Click"
+                        CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Parent}"
+                        Header="Open Folder" />
+                    <MenuItem
                         Click="Explore_Click"
                         CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Parent}"
                         Header="Explore" />
