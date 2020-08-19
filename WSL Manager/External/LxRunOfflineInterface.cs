@@ -3,7 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace Wsl_Manager.External
+namespace WSL_Manager.External
 {
     public class LxRunOfflineInterface
     {
@@ -157,7 +157,7 @@ namespace Wsl_Manager.External
                     return int.Parse(row.Split(':')[1].Trim());
                 }
             }
-            return -1;
+            return 1;
         }
 
         public string GetDefaultDistro()

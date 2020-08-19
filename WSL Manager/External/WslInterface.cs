@@ -4,23 +4,24 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
-namespace Wsl_Manager.External
+namespace WSL_Manager.External
 {
     public class WslInterface
     {
-        private string wslPath;
+        private string wslPath = "wsl";
+        private WindowsVersionManager windowsVersionManager;
 
-        public WslInterface(string wslPath)
+        public WslInterface(WindowsVersionManager windowsVersionManager)
         {
-            this.wslPath = wslPath;
+            this.windowsVersionManager = windowsVersionManager;
         }
 
-        private void ExecuteCommand(string command)
+        private void ExecuteCommand(string command, bool wsl)
         {
             var proc = new ProcessStartInfo();
 
             proc.UseShellExecute = false;
-            proc.FileName = wslPath;
+            proc.FileName = wsl ? wslPath : "cmd.exe";
             proc.Verb = "runas";
             proc.Arguments = command;
             proc.WindowStyle = ProcessWindowStyle.Hidden;
@@ -52,42 +53,64 @@ namespace Wsl_Manager.External
             return output;
         }
 
-        /*public void RunDistro(string distroName)
-        {
-            ExecuteCommand("--distribution " + distroName);
-        }*/
-
         public void TerminateDistro(string distroName)
         {
-            ExecuteCommand("--terminate " + distroName);
+            if(windowsVersionManager.CurrentVersion.Version >= WindowsVersion.V1903.Version)
+            {
+                ExecuteCommand("--terminate " + distroName, true);
+            }
+            else if(windowsVersionManager.CurrentVersion.Version == WindowsVersion.V1809.Version)
+            {
+                ExecuteCommand("/c wslconfig /terminate " + distroName, false);
+            }
+            else
+            {
+                TerminateAllDistros();
+            }
         }
 
         public void TerminateAllDistros()
         {
-            ExecuteCommand("--shutdown");
+            if (windowsVersionManager.CurrentVersion.Version >= WindowsVersion.V2004.Version) {
+                ExecuteCommand("--shutdown", true);
+            }
+            else
+            {
+                ExecuteCommand("/c net stop LxssManager", false);
+            }
         }
 
         public void SetVersion(string distroName, int targetVersion)
         {
-            ExecuteCommand("--set-version " + distroName + " " + targetVersion.ToString());
+            if (windowsVersionManager.CurrentVersion.Version >= WindowsVersion.V2004.Version)
+            {
+                ExecuteCommand("--set-version " + distroName + " " + targetVersion.ToString(), true);
+            }
         }
 
         public void SetDefaultVersion(int targetVersion)
         {
-            ExecuteCommand("--set-default-version " + targetVersion.ToString());
+            if (windowsVersionManager.CurrentVersion.Version >= WindowsVersion.V2004.Version)
+            {
+                ExecuteCommand("--set-default-version " + targetVersion.ToString(), true);
+            }
         }
 
         public string[] GetRunningDistros()
         {
-            List<String> output = ExecuteCommandWithOutput("--list --running").Split('\n').Select(p => p.Trim()).ToList();
-            output.RemoveAt(0);
-            output.RemoveAt(output.Count - 1);
-            for (int i = 0; i < output.Count; i++)
+            if (windowsVersionManager.CurrentVersion.Version >= WindowsVersion.V1903.Version)
             {
-                if (output[i].Contains(" "))
-                    output[i] = output[i].Split(' ')[0];
+                List<String> output = ExecuteCommandWithOutput("--list --running").Split('\n').Select(p => p.Trim()).ToList();
+                output.RemoveAt(0);
+                output.RemoveAt(output.Count - 1);
+                for (int i = 0; i < output.Count; i++)
+                {
+                    if (output[i].Contains(" "))
+                        output[i] = output[i].Split(' ')[0];
+                }
+                return output.ToArray();
             }
-            return output.ToArray();
+            return null;
         }
 
         public void OpenConsole()

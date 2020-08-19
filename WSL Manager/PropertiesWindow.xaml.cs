@@ -2,7 +2,7 @@
 using System.IO;
 using System.Windows;
 using System.Windows.Media.Imaging;
-using Wsl_Manager.External;
+using WSL_Manager.External;
 using static WSL_Manager.MainWindow;
 
 namespace WSL_Manager

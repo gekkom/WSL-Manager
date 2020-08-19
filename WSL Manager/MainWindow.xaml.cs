@@ -4,21 +4,23 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using Wsl_Manager.External;
 using System.Windows.Forms;
 using MenuItem = System.Windows.Controls.MenuItem;
 using MessageBox = System.Windows.MessageBox;
 using Application = System.Windows.Application;
 using Control = System.Windows.Controls.Control;
 using System.Runtime.InteropServices;
+using WSL_Manager.External;
 
 namespace WSL_Manager
 {
     public partial class MainWindow : Window
     {
+        public const string WslManagerVersion = "1.1";
+
+        private WindowsVersionManager windowsVersionManager;
         private LxRunOfflineInterface lxRunOfflineInterface;
         private WslInterface wslInterface;
 
@@ -33,11 +35,24 @@ namespace WSL_Manager
         {
             InitializeComponent();
 
-            MessageBox.Show(this,
-                    $@"Only tested and stable on Windows 10 Version 2004, with WSL 1 and 2 installed.",
-                    "Warning");
+            windowsVersionManager = new WindowsVersionManager();
 
-            wslInterface = new WslInterface("wsl");
+            if (windowsVersionManager.CurrentVersion.Version < WindowsVersion.V2004.Version)
+            {
+                MessageBox.Show(this,
+                        $@"You are running Windows 10 " + windowsVersionManager.CurrentVersion.Version
+                        + " some features may be locked or missing. Update to V2004 or later for full functionality.", "Warning");
+            }
+            else if (windowsVersionManager.CurrentVersion.Version == WindowsVersion.Unknown.Version)
+            {
+                MessageBox.Show(this,
+                        $@"You are running Unknown Windows 10 version some features may be locked or missing. Update to V2004 or later for full functionality.", "Warning");
+            }
+
+            this.Title += " " + WslManagerVersion + " - V" + windowsVersionManager.CurrentVersion.Version + " - "
+                + (windowsVersionManager.CurrentVersion.Version >= WindowsVersion.V2004.Version ? "WSL 2" : "WSL 1");
+
+            wslInterface = new WslInterface(windowsVersionManager);
             lxRunOfflineInterface = new LxRunOfflineInterface("External\\LxRunOffline.exe");
 
             RefreshWslData();
@@ -94,10 +109,18 @@ namespace WSL_Manager
                 {
                     DistroData wslDistroData = wslDistroDataList.Find(d => d.DistroName == distroNames[i]);
                     wslDistroData.DistroWslVersion = lxRunOfflineInterface.GetDistroWslVersion(distroNames[i]);
-                    if (runningDistros.Any(distroNames[i].Equals))
-                        wslDistroData.DistroState = "Running";
+
+                    if (windowsVersionManager.runningDistroCheckSupported)
+                    {
+                        if (runningDistros.Any(distroNames[i].Equals))
+                            wslDistroData.DistroState = "Running";
+                        else
+                            wslDistroData.DistroState = "Stopped";
+                    }
                     else
-                        wslDistroData.DistroState = "Stopped";
+                    {
+                        wslDistroData.DistroState = "Unknown";
+                    }
                 }
                 else
                 {
@@ -106,10 +129,18 @@ namespace WSL_Manager
 
                     wslDistroData.DistroName = distroNames[i];
                     wslDistroData.DistroWslVersion = lxRunOfflineInterface.GetDistroWslVersion(distroNames[i]);
-                    if (runningDistros.Any(distroNames[i].Equals))
-                        wslDistroData.DistroState = "Running";
+
+                    if (windowsVersionManager.runningDistroCheckSupported)
+                    {
+                        if (runningDistros.Any(distroNames[i].Equals))
+                            wslDistroData.DistroState = "Running";
+                        else
+                            wslDistroData.DistroState = "Stopped";
+                    }
                     else
-                        wslDistroData.DistroState = "Stopped";
+                    {
+                        wslDistroData.DistroState = "Unknown";
+                    }
 
                     wslDistroDataList.Add(wslDistroData);
                 }
@@ -125,15 +156,18 @@ namespace WSL_Manager
         {
             Process p = lxRunOfflineInterface.RunDistro(distroName, false, false);
 
-            int timeoutCounter = 0;
-
-            while (!(wslInterface.GetRunningDistros().Any(distroName.Equals)) && timeoutCounter < wslConsoleTimeout)
+            if(windowsVersionManager.CurrentVersion.Version >= WindowsVersion.V1903.Version)
             {
-                System.Threading.Thread.Sleep(100);
-                timeoutCounter++;
+                int timeoutCounter = 0;
+
+                while (!(wslInterface.GetRunningDistros().Any(distroName.Equals)) && timeoutCounter < wslConsoleTimeout)
+                {
+                    System.Threading.Thread.Sleep(100);
+                    timeoutCounter++;
+                }
+                System.Threading.Thread.Sleep(1000);
+                SetWindowText(p.MainWindowHandle, distroName + " Console");
             }
-            System.Threading.Thread.Sleep(300);
-            SetWindowText(p.MainWindowHandle, distroName + " Console");
 
             RefreshWslData();
         }
@@ -148,7 +182,11 @@ namespace WSL_Manager
             selectedDistroData = (DistroData)distroList.SelectedItem;
 
             var menuItem = (MenuItem)e.OriginalSource;
+
             menuItem.Header = "Switch To WSL " + (selectedDistroData.DistroWslVersion == 1 ? 2 : 1);
+
+            if (windowsVersionManager.CurrentVersion.Version < WindowsVersion.V2004.Version)
+                menuItem.IsEnabled = false;
         }
 
         private void Open_Click(object sender, RoutedEventArgs e)
@@ -156,7 +194,7 @@ namespace WSL_Manager
             StartDistro(selectedDistroData.DistroName);
         }
 
-        private void OpenFolder_Click(object sender, RoutedEventArgs e)
+        private void OpenFolder()
         {
             var startInfo = new ProcessStartInfo(
                 System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "explorer.exe"),
@@ -168,30 +206,45 @@ namespace WSL_Manager
             Process.Start(startInfo);
         }
 
+        private void OpenFolder_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFolder();
+        }
+
         private void Explore_Click(object sender, RoutedEventArgs e)
         {
-            lxRunOfflineInterface.RunDistro(selectedDistroData.DistroName, false, true);
+            if (windowsVersionManager.CurrentVersion.Version >= WindowsVersion.V1903.Version)
+            {
+                lxRunOfflineInterface.RunDistro(selectedDistroData.DistroName, false, true);
 
-            while (!(wslInterface.GetRunningDistros().Any(selectedDistroData.DistroName.Equals)))
-                System.Threading.Thread.Sleep(100);
+                while (!(wslInterface.GetRunningDistros().Any(selectedDistroData.DistroName.Equals)))
+                    System.Threading.Thread.Sleep(100);
 
-            var startInfo = new ProcessStartInfo(
+                var startInfo = new ProcessStartInfo(
                 System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "explorer.exe"),
                 $@"\\wsl$\{selectedDistroData.DistroName}")
-            {
-                UseShellExecute = false,
-            };
+                {
+                    UseShellExecute = false,
+                };
 
-            Process.Start(startInfo);
-            RefreshWslData();
+                Process.Start(startInfo);
+
+                RefreshWslData();
+            }
+            else
+            {
+                OpenFolder();
+            }
         }
 
         private void Mount_Click(object sender, RoutedEventArgs e)
         {
             lxRunOfflineInterface.RunDistro(selectedDistroData.DistroName, true, false);
-
-            while (!(wslInterface.GetRunningDistros().Any(selectedDistroData.DistroName.Equals)))
-                System.Threading.Thread.Sleep(100);
+            if (windowsVersionManager.CurrentVersion.Version >= WindowsVersion.V1903.Version)
+            {
+                while (!(wslInterface.GetRunningDistros().Any(selectedDistroData.DistroName.Equals)))
+                    System.Threading.Thread.Sleep(100);
+            }
 
             RefreshWslData();
         }
