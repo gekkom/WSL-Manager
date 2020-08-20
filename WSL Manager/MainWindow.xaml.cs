@@ -43,11 +43,6 @@ namespace WSL_Manager
                         $@"You are running Windows 10 " + windowsVersionManager.CurrentVersion.Version
                         + " some features may be locked or missing. Update to V2004 or later for full functionality.", "Warning");
             }
-            else if (windowsVersionManager.CurrentVersion.Version == WindowsVersion.Unknown.Version)
-            {
-                MessageBox.Show(this,
-                        $@"You are running Unknown Windows 10 version some features may be locked or missing. Update to V2004 or later for full functionality.", "Warning");
-            }
 
             this.Title += " " + WslManagerVersion + " - V" + windowsVersionManager.CurrentVersion.Version + " - "
                 + (windowsVersionManager.CurrentVersion.Version >= WindowsVersion.V2004.Version ? "WSL 2" : "WSL 1");

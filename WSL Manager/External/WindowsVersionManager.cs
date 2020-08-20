@@ -25,7 +25,7 @@ namespace WSL_Manager.External
             else if (releaseId == WindowsVersion.V1803.Version)
                 CurrentVersion = WindowsVersion.V1803;
             else
-                CurrentVersion = WindowsVersion.Unknown;
+                CurrentVersion = new WindowsVersion(releaseId);
 
 
             if (CurrentVersion.Version >= WindowsVersion.V1903.Version)
