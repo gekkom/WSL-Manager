@@ -1,14 +1,15 @@
-Warning: Only tested and stable on Windows 10 x64 Version 2004, with WSL 1 and 2 installed.
+Works on Windows 10 1803, 1809, 1903, 1909, 2004 and every corresponding Windows Server version.
+Older Windows versions may have limitations.
 
 [How To Install WSL](https://docs.microsoft.com/en-us/windows/wsl/about)
 
 ## Installation
 
-[Installer](https://github.com/visdauas/WSL-Manager/releases/download/v1.0-beta/WSL.Manager.Setup.x64.exe)
+[Installer](https://github.com/visdauas/WSL-Manager/releases/download/v1.1.1/wsl-manager-installer-x64.exe)
 
 # WSL Manager
 
-Uses [LxRunOffline](https://github.com/DDoSolitary/LxRunOffline) and wsl.exe to manage your WSL distros.
+Uses [LxRunOffline](https://github.com/DDoSolitary/LxRunOffline), wsl and wslconfig to manage your WSL distros.
 
 Original project has been abandoned as far as I know.
 [Old Repo](https://github.com/wslhub/WSL-DistroManager)
@@ -22,7 +23,7 @@ Original project has been abandoned as far as I know.
 # Features
   **Implemented:**
 
-  - Open, explore, mount, move, duplicate, register, unregister and terminate your distros
+  - Open, rename, explore, mount, move, duplicate, register, unregister and terminate your distros
 
   - You can switch the WSL version of your distros
 
@@ -44,6 +45,3 @@ Original project has been abandoned as far as I know.
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
 Please test your code before opening a pull request.
-
-## License
-[MIT](https://choosealicense.com/licenses/mit/)
