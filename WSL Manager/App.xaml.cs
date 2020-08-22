@@ -38,7 +38,8 @@ namespace WSL_Manager
 
         private void ShowUnhandledException(Exception exception, string source)
         {
-            Clipboard.SetText(exception.StackTrace);
+            if(exception.StackTrace != null)
+                Clipboard.SetText(exception.StackTrace);
             MessageBox.Show("Unhandled exception:\n" + exception.StackTrace, "Error copied to clipboard");
         }
     }
