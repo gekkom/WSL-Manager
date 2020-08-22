@@ -13,12 +13,14 @@ using Application = System.Windows.Application;
 using Control = System.Windows.Controls.Control;
 using System.Runtime.InteropServices;
 using WSL_Manager.External;
+using System.Threading.Tasks;
 
 namespace WSL_Manager
 {
     public partial class MainWindow : Window
     {
-        public const string WslManagerVersion = "1.1";
+        public const string WslManagerVersion = "v1.1.1";
+        private Updater updater;
 
         private WindowsVersionManager windowsVersionManager;
         private LxRunOfflineInterface lxRunOfflineInterface;
@@ -34,6 +36,10 @@ namespace WSL_Manager
         public MainWindow()
         {
             InitializeComponent();
+
+            updater = new Updater(WslManagerVersion);
+
+            CheckUpdate();
 
             windowsVersionManager = new WindowsVersionManager();
 
@@ -56,6 +62,20 @@ namespace WSL_Manager
             refreshTimer.Tick += refreshTimerTick;
             refreshTimer.Interval = new TimeSpan(0, 0, 30);
             refreshTimer.Start();
+        }
+
+        private void CheckUpdate()
+        {
+            string url = Task.Run(() => updater.CheckForUpdateAsync()).Result;
+            if (url != null)
+            {
+                var response = MessageBox.Show(this,
+                "New Version Available. Do you want to download it?", "Update", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+                if (response != MessageBoxResult.Yes)
+                    return;
+                System.Diagnostics.Process.Start(url);
+            }
         }
 
         public static string GetImageKey(string distroName)
@@ -540,11 +560,11 @@ namespace WSL_Manager
         private void About_Click(object sender, RoutedEventArgs e)
         {
             MessageBox.Show(this,
-                    $@"WSL Manager 1.0 [BETA] by visdauas
+                    $@"WSL Manager " + WslManagerVersion
+                    + $@" by visdauas
+Repository: https://github.com/visdauas/WSL-Manager
 
-New Repository: https://github.com/visdauas/WSL-Manager
-
-Old Repository: https://www.github.com/rkttu/WSL-DistroManager
+Original Repository: https://www.github.com/rkttu/WSL-DistroManager
 Icons: https://www.icons8.com",
                     "About");
         }
