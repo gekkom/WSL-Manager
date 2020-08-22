@@ -14,9 +14,9 @@ Uses [LxRunOffline](https://github.com/DDoSolitary/LxRunOffline), wsl and wslcon
 Original project has been abandoned as far as I know.
 [Old Repo](https://github.com/wslhub/WSL-DistroManager)
 
-![Alt text](Screenshots/screenshot1.png?raw=true)
+![Alt text](Screenshots/screenshot11.png?raw=true)
 
-![Alt text](Screenshots/screenshot2.png?raw=true)
+![Alt text](Screenshots/screenshot22.png?raw=true)
 
 ![Alt text](Screenshots/screenshot3.jpg?raw=true)
 
