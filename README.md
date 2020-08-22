@@ -37,7 +37,7 @@ Original project has been abandoned as far as I know.
 
   - Better visual experience
 
-  - Export, import and delete distro functionality
+  - Export, import, delete and uninstall distro functionality
 
   - Custom distro installer
 
