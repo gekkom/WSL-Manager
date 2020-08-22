@@ -43,6 +43,7 @@
                         </MenuItem.Header>
                         <MenuItem Click="LxRunOfflineConsole_Click" Header="LxRunOffline Console" />
                         <MenuItem Click="WslConsole_Click" Header="WSL Console" />
+                        <MenuItem Click="OverrideToWSL2_Click" Header="I Have WSL 2" />
                     </MenuItem>
                     <MenuItem Style="{DynamicResource ResourceKey=menuItemWhite}">
                         <MenuItem.Header>

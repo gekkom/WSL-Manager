@@ -519,6 +519,14 @@ namespace WSL_Manager
             wslInterface.OpenConsole();
         }
 
+        private void OverrideToWSL2_Click(object sender, RoutedEventArgs e)
+        {
+            windowsVersionManager.CurrentVersion.Version = WindowsVersion.V2004.Version;
+
+            MessageBox.Show(this, "Windows version management overridden to WSL 2, only use if you really have WSL 2." +
+                " Resets after WSL Manager Restart", "Warning");
+        }
+
         private void Documentation_Click(object sender, RoutedEventArgs e)
         {
             Process.Start(new ProcessStartInfo("https://docs.microsoft.com/en-us/windows/wsl/about") { UseShellExecute = true });
