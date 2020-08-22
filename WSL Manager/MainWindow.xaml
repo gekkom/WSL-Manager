@@ -52,6 +52,7 @@
                         <MenuItem Click="Documentation_Click" Header="WSL Documentation" />
                         <MenuItem Click="Website_Click" Header="WSL Manager Official Website" />
                         <Separator />
+                        <MenuItem Click="UpdateCheck_Click" Header="Check For Updates" />
                         <MenuItem Click="About_Click" Header="About" />
                     </MenuItem>
                 </Menu>

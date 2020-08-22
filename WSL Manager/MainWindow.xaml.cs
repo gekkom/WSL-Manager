@@ -557,6 +557,11 @@ namespace WSL_Manager
             Process.Start(new ProcessStartInfo("https://github.com/visdauas/WSL-Manager") { UseShellExecute = true });
         }
 
+        private void UpdateCheck_Click(object sender, RoutedEventArgs e)
+        {
+            CheckUpdate();
+        }
+
         private void About_Click(object sender, RoutedEventArgs e)
         {
             MessageBox.Show(this,
@@ -568,6 +573,7 @@ Original Repository: https://www.github.com/rkttu/WSL-DistroManager
 Icons: https://www.icons8.com",
                     "About");
         }
+
         private void FreezeApp()
         {
             allowRefresh = false;
