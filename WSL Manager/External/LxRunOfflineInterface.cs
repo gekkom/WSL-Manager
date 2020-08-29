@@ -65,8 +65,10 @@ namespace WSL_Manager.External
         public string[] GetDistroList()
         {
             string res = ExecuteCommandWithOutput("list");
-            string[] result = res.Remove(res.Length - 1).Split('\n').Select(p => p.Trim()).ToArray();
-            return result;
+            if (res.Trim() == "")
+                return null;
+
+            return res.Remove(res.Length - 1).Split('\n').Select(p => p.Trim()).ToArray(); ;
         }
 
         public string GetDistroSummary(string distroName)

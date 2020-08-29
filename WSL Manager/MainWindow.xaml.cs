@@ -110,6 +110,9 @@ namespace WSL_Manager
 
             string[] distroNames = lxRunOfflineInterface.GetDistroList();
 
+            if (distroNames == null)
+                return;
+
             string[] runningDistros = wslInterface.GetRunningDistros();
 
             foreach(DistroData distroItem in wslDistroDataList.ToList())
