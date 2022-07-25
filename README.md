@@ -1,3 +1,5 @@
+## Deprecated please use: https://github.com/bostrot/wsl2-distro-manager
+
 Works on Windows 10 1803, 1809, 1903, 1909, 2004 and every corresponding Windows Server version.
 Older Windows versions may have limitations.
 
